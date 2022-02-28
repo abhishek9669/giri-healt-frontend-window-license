@@ -36,3 +36,122 @@
     transform: rotate(360deg);
   }
 }
+
+/*=================================
+ Login Start
+=================================*/
+ .user_switch_btn{
+   cursor: pointer;
+ }
+ .user_switch_btn:hover{
+   color: rgb(25, 113, 148) !important;
+ }
+/*=================================
+ Contact Form Start
+=================================*/
+
+
+/*=================================
+ 404 Error Start
+=================================*/
+ .page_error{
+    width: 30%;
+ }
+/*=================================
+ Admin Login Form Start
+=================================*/
+ .admin_form{
+    height: 100vh;
+ }
+ .admin_form > form{
+   width: 35%;
+ }
+/*=================================
+ Admin Dashboard Start
+=================================*/
+.rdrSelected {
+  left: 2px;
+  right: 2px;
+}
+.rdrDayToday .rdrDayNumber{
+  background: #96C93D !important;
+  left: 2px;
+  right: 2px;
+  border-radius: 1.042em !important;
+}
+.rdrDayToday .rdrDayNumber span{
+  color: #fff !important;
+}
+.rdrDayToday .rdrDayNumber span:after{
+  background: #96C93D !important;
+}
+.rdrDateDisplayWrapper, .rdrMonth, .rdrMonthAndYearWrapper{
+  width: 100%;
+}
+.date-range span.icon{
+  font-size: 1.1rem;
+}
+.time-box button{
+  width: 100px !important;
+}
+.book-btn{
+  width: 200px;
+}
+.warning-res{
+  background-color: #233632d5 !important;
+}
+.form-label{
+  font-size: 1.1rem;
+}
+
+/*=================================
+Loader Start
+=================================*/
+.loader_box{
+  width: 100vw;
+  height: 100vh;
+  position:fixed;
+  z-index: 90000;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color: #f3d7d74b;
+}
+/*=================================
+Pagination Start
+=================================*/
+.cursor-disbled a{
+  cursor: url("../public/assets/img/error/disabled2.png"),auto;
+}
+/*=================================
+Login click Start
+=================================*/
+.user_details_content{
+  width: 150px;
+  background: rgb(255, 255, 255);
+  /* height: 100px; */
+  position: absolute;
+  z-index: 200;
+  margin-top: 22px;
+  display: none;
+}
+.user_details {
+  cursor: pointer;
+}
+.user_details_content .list{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+}
+.user_details_content.active{
+   display: block;
+}
+.user_details_content .list:hover{
+  text-decoration: none;
+}
+
+.resend-otp-btn{
+  padding: 5px;
+  font-size: 10px !important;
+}
