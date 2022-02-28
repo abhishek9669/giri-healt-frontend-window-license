@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Loader from '../../Loader'
 import Layout from '../Common/Layout'
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 const config = require("../../config.json")
 export default function LoginRegister() {
   //state area
@@ -14,6 +15,7 @@ export default function LoginRegister() {
     const [otpHandler, setOtpHandler]= useState({status:false})
     const [message, setMessage] = useState({status:false, msg:"", color:"text-danger"})
     const [isLoading, setIsLoading] = useState(false)
+    const [countTime, setCountTime] = useState(false)
     const Navigate = useNavigate()
 
     useEffect(()=>{
@@ -53,7 +55,9 @@ export default function LoginRegister() {
         setMessage({...message, status:false, color:"text-danger"})
         setForgotPass({})
     }
-    //forgotformHandler
+//forgotformHandler
+    //countdown craeting
+    
     //update Passwod Api
      const  changPasswordApi = async()=>{
          try {
@@ -90,6 +94,7 @@ export default function LoginRegister() {
             console.log(result)
             if(result.status===200){
                 setIsLoading(false)
+                setCountTime(false)
                 setOtpHandler({...otpHandler, status:true})
                 setMessage({...message, status:true, msg:result.data.msg, color:"text-success"})
             }
@@ -101,6 +106,7 @@ export default function LoginRegister() {
     }
     const sendOtpHandler = (e)=>{
         setIsLoading(true)
+        setCountTime(false)
         forgetPassApi()
 
     }
@@ -160,6 +166,26 @@ export default function LoginRegister() {
     const registerHandler = ()=>{
           setSwitchForm(false)
     }
+  
+ //resend otp Handler
+    const resendOtpHandler = ()=>{
+        setIsLoading(true)
+        forgetPassApi()
+        setCountTime(false)
+        setMessage({...message, status:false, color:"text-danger"})
+    }
+    const renderTime = ({ remainingTime }) => {
+        if (remainingTime === 0) {
+          setCountTime(true)
+        }
+      
+        return (
+          <div className="">
+            <div className="value text-center">{remainingTime}</div>
+            <div className="text">seconds</div>
+          </div>
+        );
+      };
    
   return (
  <>
@@ -167,7 +193,8 @@ export default function LoginRegister() {
     <Layout >
      <div className='page-section'>
         <div className="container">
-            <div className="w-50 mx-auto bg-white p-4 rounded shadow-sm wow zoomIn">
+      
+            <div className="w-50 my_form mx-auto bg-white p-4 rounded shadow-sm wow zoomIn">
                 <h5 className="text-center fs-5 fw-normal" id="exampleModalLabel">{forgotSwitch?"Forgot Password":switchForm?`Login User`:`Register User`}</h5>
                       {
                           //dynamic form handler
@@ -186,9 +213,26 @@ export default function LoginRegister() {
                                             <label  className="form-label">OTP <span className='text-danger'>*</span></label>
                                             <label  className="form-label mx-2"> </label>
                                             <input required type="text"  maxLength="6" name='otp' value={forgotPass.otp || ""} onChange={forgotPassHandler} className="form-control"  />  
+                                            <div className="d-flex my-2 justify-content-between align-items-center">
+                                            <div id="emailHelp" className={`form-text ${message.color} mb-3`}>{message.status===true && message.msg}</div>
+                                            {/* countdown Start  */}
+                                            {!countTime ?<CountdownCircleTimer 
+                                                size={80}
+                                                strokeWidth={2}
+                                                isPlaying
+                                                duration={180}
+                                                colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                                                colorsTime={[10, 6, 3, 0]}
+                                                onComplete={() => ({ shouldRepeat:true, delay: 1, })}
+                                            >
+                                                {renderTime}
+                                            </CountdownCircleTimer> :(                                      
+                                            <button type="submit" className="btn btn-primary btn-sm m-2 fs-5 resend-otp-btn" onClick={resendOtpHandler} >Resend OTP</button>
+                                            )}                                                     
+                                            </div>
                                          </div>)}
 
-                                         <div id="emailHelp" className={`form-text ${message.color} mb-3`}>{message.status===true && message.msg}</div>
+                                       
                                             {
                                                 otpHandler.status ?(
                                                 <>
@@ -201,7 +245,7 @@ export default function LoginRegister() {
                                                     <input required type="password" name="cpassword" value={forgotPass.cpassword || ""} onChange={forgotPassHandler}  className="form-control"  />
                                                 </div>
                                                  <button type="submit" className="btn btn-primary btn-sm m-2 fs-5" onClick={changePasswordHandler} >Submit</button>
-                                                 <button type="submit" className="btn btn-primary btn-sm m-2 fs-5" onClick={changePasswordHandler} >Resend OTP</button>
+                         
 
                                                 </>)
                                                 :(<button type="submit" className="btn btn-primary btn-sm fs-5" onClick={sendOtpHandler} >Send Otp</button>)

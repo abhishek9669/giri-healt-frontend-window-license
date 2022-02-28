@@ -153,5 +153,11 @@ Login click Start
 
 .resend-otp-btn{
   padding: 5px;
-  font-size: 10px !important;
+  font-size: 8px !important
+}
+
+@media only screen and (max-width:600px){
+  .my_form{
+    width: 100% !important;
+}
 }
