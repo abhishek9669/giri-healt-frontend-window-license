@@ -8,6 +8,7 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Loader";
 import Layout from "../Common/Layout";
+import { specialist } from "../../jsonData/specialist";
 const config = require("../../config.json")
 export default function Appoint() {
 //state area
@@ -16,10 +17,18 @@ export default function Appoint() {
   const [warning, setWarning] = useState(false)
   const [category, setCategory] = useState("general")
   const [isLoading, setIsLoading] =useState(false)
+  const [doctors, setDoctors] = useState({
+    data:[]
+  })
+  const [slectDoc, setSelectDoc] = useState({data:[]})
+  const [getDocDetails, setGetDocDetails] = useState("")
   const Navgate = useNavigate()
     useEffect(()=>{
         if(!window.localStorage.getItem("jwt-normal-user")){
           Navgate("/")
+        }
+        else{
+           doctorApi()
         }
        
     },[Navgate])
@@ -32,8 +41,35 @@ export default function Appoint() {
       return [date.getFullYear(), mnth, day].join("-")
     }
   
-  
-  //dateagte
+  //doctorApi 
+   const doctorApi = async () =>{
+     try {
+       const result = await axios.get(`${config.URL_HOST}/doctors`,{
+         headers:{
+           'authorization':`Bearer ${JSON.parse(window.localStorage.getItem("jwt-normal-user")).token}`
+         }
+       })
+       if(result.status===200){
+         setDoctors(result)
+       }
+     } catch (error) {
+       console.log(error.response)
+     }
+   }
+  const doctorsFilter = (specialist)=>{
+    const result2 = doctors.data.filter(doc=>{
+      return doc.specialist== specialist
+    })
+    setSelectDoc({data:result2})
+    setGetDocDetails(`${result2[0].fname} ${result2[0].lname}`)
+  }
+
+ //category handler
+ const categoryHandler = (e)=>{
+   setCategory(e.target.value)
+   doctorsFilter(e.target.value)
+ }
+  //dateagte  
   function getFullDate(value){
        var fullDate = value.toString()
        return fullDate.split(" ").slice(1,4).toString().replace(/,/g," ")
@@ -42,7 +78,7 @@ export default function Appoint() {
       if(day.date==="Sun" || day.date==="Sat"){
          day = {status:true, msg:"Weekend Off"}
       }
-//timebtn
+//timebtnoti
   var timeBtn = [
     {time:"08:00"},
     {time:"09:00"},
@@ -86,9 +122,8 @@ export default function Appoint() {
                     name:fname+ " "+lname, user_id:_id, mobile:mobile, email:email, time:timeAppoint, date:convert(value),  query_category:category
                   }
                 //sending Api requet
-            
                 try {
-                  const reslut = await axios.post(`${config.URL_HOST}/appointment`,userDetail,{
+                  const reslut = await axios.post(`${config.URL_HOST}/appointment`,{...userDetail,doctor_name:getDocDetails },{
                     headers:{
                       'authorization':`Bearer ${userJwtData.token}` 
                     }
@@ -104,10 +139,7 @@ export default function Appoint() {
                 }
           }
         })
-
-       
       }
-      
     }
 
   return (
@@ -120,7 +152,7 @@ export default function Appoint() {
           <div className="col-12- col-md-6">
             {
               day.status===true ? (
-                <div className="date-not-avail ">
+              <div className="date-not-avail ">
                 <img src="../assets/img/error/not-avial-date.svg" className="img-fluid" alt="" />
               </div>
               ):
@@ -128,51 +160,78 @@ export default function Appoint() {
                 <div className="time_box ">
                   <div className="mx-md-5 w-75 my-3">
                     <label  className="form-label">Select Category</label>
-                    <select className="custom-select " value={category} onChange={(e)=>setCategory(e.target.value)} >
-                      <option value="general">General Health</option>
-                      <option value="cardiology">Cardiology</option>
-                      <option value="dental">Dental</option>
-                      <option value="neurology">Neurology</option>
-                      <option value="orthopaedics">Orthopaedics</option>
+                    <select required className="custom-select " value={category} onChange={categoryHandler} >
+                      {specialist.map((specialist, index)=>{
+                         return(
+                           <option selected key={index} value={specialist}>{specialist}</option>
+                         )
+                      })}
                     </select>
                   </div>
+                  <div className="mx-md-5 w-75 my-3">
+                       {
+                         slectDoc.data.length>0?
+                         (<>
+                              <label  className="form-label">Select Doctor</label>
+                              <select required className="custom-select" value={slectDoc.data.specialist }  onChange={(e)=>setGetDocDetails(e.target.value)} >
+                                { slectDoc.data.map((doc,index)=>{
+                                  return(
+                                    <option selected key={index} value={`${doc.fname} ${doc.lname}`}>{`${doc.fname} ${doc.lname}`}</option>
+                                  )
+                                })}
+                             </select>
+                             {/* time Start  */}
+                            <div className="date-range px-md-5 d-flex align-items-center ">
+                              <div className="d-flex align-items-center m-2">
+                                <span className="material-icons-sharp me-1 icon">date_range</span>
+                                <span> {getFullDate(value)}</span>
+                              </div>
+                              <div className="d-flex align-items-center ms-md-1">
+                              {/* Time getting */}
+                              {
+                                time&&(
+                                    <> 
+                                      <span className="material-icons-sharp me-1 icon">schedule</span>
+                                      <span> {time}:00 {Number(time)>=12?"PM":"AM"} </span> 
+                                    </>)
+                              }
+                              </div>
+                            </div>
+                            {/* time buttons  */}
+                            <div className="time-box  py-md-2 ">
+                              {/* timebtn mapping */}
+                              {timeBtn.map((timeData, index)=>{
+                                return(
+                                  <button onClick={timeHandler} className="btn btn-sm btn-primary m-2" key={index}>{timeData.time}</button>
+                                )
+                              })}
+                            </div>
+                              {/* Warning */}
+                              {
+                                (day.status || warning) &&  ( 
+                                <div className="warning-res bg-primary text-white p-2 rounded ">
+                                  <span>{day.msg || warning.msg}</span>
+                                </div>
+                              )
+                              }
+                         </>):
+                         (
+                          <div className="doctor-not-avail ">
+                            <img src="../assets/img/error/doctor not found.gif" className="img-fluid" alt="" />
+                          </div>
+                         )
+                        
+                       }
+                
+                  </div>
               
-                <div className="date-range px-md-5 d-flex align-items-center ">
-                <div className="d-flex align-items-center m-2">
-                  <span className="material-icons-sharp me-1 icon">date_range</span>
-                  <span> {getFullDate(value)}</span>
-                </div>
-                <div className="d-flex align-items-center ms-md-1">
-                {/* Time getting */}
-                {
-                  time&&(
-                      <> 
-                        <span className="material-icons-sharp me-1 icon">schedule</span>
-                        <span> {time}:00 {Number(time)>=12?"PM":"AM"} </span> 
-                      </>)
-                }
-                </div>
-                </div>
-                <div className="time-box px-md-5 py-md-2 ">
-                  {/* timebtn mapping */}
-                  {timeBtn.map((timeData, index)=>{
-                    return(
-                      <button onClick={timeHandler} className="btn btn-sm btn-primary m-2" key={index}>{timeData.time}</button>
-                    )
-                  })}
-                </div>
+            
+             
                </div>
               )
             }
            
-           {/* Warning */}
-           {
-             (day.status || warning) &&  ( 
-            <div className="warning-res bg-primary text-white p-2 rounded mx-md-5">
-              <span>{day.msg || warning.msg}</span>
-            </div>
-           )
-           }
+         
           </div>
           <div className="col-12- col-md-6">
             <div className="date-box p-md-5">
@@ -193,7 +252,7 @@ export default function Appoint() {
           </div>
           <form action="" onSubmit={appointmentHandler} >
           <div className="book-btn mx-auto my-3">
-            <button type="submit" disabled={day.status} className="btn btn-primary btn-sm">Book Appointment</button>
+            <button type="submit" disabled={day.status ||  slectDoc.data.length<1 } className="btn btn-primary btn-sm">Book Appointment</button>
           </div>
           </form>
         </div>

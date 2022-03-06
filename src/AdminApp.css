@@ -310,3 +310,11 @@ table thead tr th, .table thead tr td, .table tbody tr th, .table tbody tr td {
       margin: 0;
       box-sizing: border-box;
   }
+  .pointer{
+   cursor: pointer !important;
+  }
+  
+  input[type="date"]::-webkit-inner-spin-button,
+  input[type="date"]::-webkit-calendar-picker-indicator {
+      -webkit-appearance: none;
+  }

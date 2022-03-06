@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Loader from '../../Loader'
 import Layout from '../Common/Layout'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import Swal from 'sweetalert2'
 const config = require("../../config.json")
 export default function LoginRegister() {
   //state area
@@ -148,8 +149,13 @@ export default function LoginRegister() {
                         const result = await axios.post(`${config.URL_HOST}/user/create`,register)
                         console.log(result)
                         if(result.status===200){
-                            setSwitchForm(true)
                             setRegister({})
+                            Swal.fire(
+                                'Good job!',
+                                `${result.data.msg}`,
+                                'success'
+                              )
+                              setSwitchForm(true)
                         }
                     } catch (error) {
                          console.log(error.response)
@@ -193,9 +199,8 @@ export default function LoginRegister() {
     <Layout >
      <div className='page-section'>
         <div className="container">
-      
             <div className="w-50 my_form mx-auto bg-white p-4 rounded shadow-sm wow zoomIn">
-                <h5 className="text-center fs-5 fw-normal" id="exampleModalLabel">{forgotSwitch?"Forgot Password":switchForm?`Login User`:`Register User`}</h5>
+                <h5 className="text-center fs-5 fw-normal" id="exampleModalLabel">{forgotSwitch?"Patient Forgot Password":switchForm?`Login Patient`:`Register Patient`}</h5>
                       {
                           //dynamic form handler
                            switchForm?(<>

@@ -1,0 +1,1 @@
+export const doctorSchedule = ["Schedule Date", "Schedule Day", "Start Time", "End Time", "Counsulting Time", "Status", "Action"]

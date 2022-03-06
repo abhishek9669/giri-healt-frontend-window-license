@@ -57,6 +57,10 @@
  .page_error{
     width: 30%;
  }
+ .doctor-not-avail{
+   width: 300px !important;
+   height: 300px;
+ }
 /*=================================
  Admin Login Form Start
 =================================*/

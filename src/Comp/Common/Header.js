@@ -1,11 +1,9 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useState} from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import {GlobalContext} from "../../App"
 export default function Header() {
   const Navigate = useNavigate()
 //sate area 
   const [active, setActive] = useState(false)
-  const data = useContext(GlobalContext)
 
 //Function Area
   const logoutHanler = ()=>{
@@ -66,9 +64,7 @@ export default function Header() {
               <li className="nav-item">
                 <a className="nav-link" href="about.html">About Us</a>
               </li>
-              <li className="nav-item">
-                <a className="nav-link" href="doctors.html">Doctors</a>
-              </li>
+              
               <li className="nav-item">
                 <a className="nav-link" href="blog.html">News</a>
               </li>
@@ -96,8 +92,11 @@ export default function Header() {
                     </li>
                 </>
                ): (<>
+                    <li className="nav-item">
+                      <NavLink className="btn btn-primary ml-lg-3" to="/doctor-login">Doctors Login</NavLink>
+                    </li>
                       <li className="nav-item">
-                        <NavLink className="btn btn-primary ml-lg-3" to="/login-register" >Login/Register</NavLink>
+                        <NavLink className="btn btn-primary ml-lg-3" to="/login-register" >Patient Login</NavLink>
                       </li>
                </>)}
             </ul>
