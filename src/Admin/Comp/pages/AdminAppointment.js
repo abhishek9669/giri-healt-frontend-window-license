@@ -105,6 +105,7 @@ export default function AdminAppointment() {
                 <tr>
                   <th>Appointment _id</th>
                   <th>Patient</th>
+                  <th>Doctor</th>
                   <th>Query</th>
                   <th>Appointment</th>
                   <th>Phone</th>
@@ -117,7 +118,7 @@ export default function AdminAppointment() {
                 {appointmentData.data.length === 0
                   ? null
                   : appointmentData.data.map((appointData) => {
-                    const {_id, date, email, mobile, name, query_category, user_id, time} = appointData
+                    const {_id, date, email, mobile, name, query_category, user_id, time, doctor_name} = appointData
                     var date2 = date.slice(0,10).split("-")
                         date2 = new Date(date2).toString().split(" ").slice(1,4)
                         date2 = date2.toString().replace(/,/g, " ")
@@ -133,6 +134,13 @@ export default function AdminAppointment() {
                             <div className="user-info">
                               <div className="user-info__img">
                                 <h3 className="mb-0">{name}</h3>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="user-info">
+                              <div className="user-info__img">
+                                <h3 className="mb-0">{doctor_name}</h3>
                               </div>
                             </div>
                           </td>

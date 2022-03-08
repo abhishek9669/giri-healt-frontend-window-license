@@ -6,7 +6,7 @@ import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import { specialist } from '../../jsonData/specialist';
 import Swal from 'sweetalert2';
 const config = require("../../config.json")
-var CryptoJS = require("crypto-js");
+
 
 export default function DocorLoginRegister() {
   //state area 
@@ -42,10 +42,8 @@ export default function DocorLoginRegister() {
        const doctorLoginApi = async ()=>{
          try {
            const result = await axios.post(`${config.URL_HOST}/user/doctor-login`, doctorLogin)
-           //encrypt
-           var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(result.data),config.LOGIN_API_KEY).toString()
            if(result.status===200){
-             window.localStorage.setItem("doctor-login", ciphertext)
+             window.localStorage.setItem("doctor-login", JSON.stringify(result.data))
              Navigate("/doctor/dashboard")
            }
          } catch (error) {

@@ -173,7 +173,7 @@ export default function Appoint() {
                          slectDoc.data.length>0?
                          (<>
                               <label  className="form-label">Select Doctor</label>
-                              <select required className="custom-select" value={slectDoc.data.specialist }  onChange={(e)=>setGetDocDetails(e.target.value)} >
+                              <select required className="custom-select" value={slectDoc.data.specialist || getDocDetails}  onChange={(e)=>setGetDocDetails(e.target.value)} >
                                 { slectDoc.data.map((doc,index)=>{
                                   return(
                                     <option selected key={index} value={`${doc.fname} ${doc.lname}`}>{`${doc.fname} ${doc.lname}`}</option>

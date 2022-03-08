@@ -6,7 +6,6 @@ import Loader from '../../Loader';
 import DoctorWelcome from '../Common/DoctorWelcome';
 import Swal from 'sweetalert2'
 const config = require("../../config.json")
-var CryptoJS = require("crypto-js");
 export default function AdminAppointment() {
   //State Area 
     const [isLoading, setIsLoading] = useState(false)
@@ -23,19 +22,30 @@ export default function AdminAppointment() {
       if(!window.localStorage.getItem("doctor-login")){
         Navigate("/admin")
       }else{
-  
-        dcryptToken(localStorage.getItem("doctor-login"))
+        doctorPatient()
       }
     }, [ Navigate]);
     
  // Function Area
-   //dcrypt jwt
-   function dcryptToken (data){
-    var bytes = CryptoJS.AES.decrypt(data, config.LOGIN_API_KEY);
-     setUserInfo( JSON.parse(bytes.toString(CryptoJS.enc.Utf8)))
-   }
-   //api Calling Appointment
    
+   //api Calling Appointment
+   const doctorPatient = async (page=1)=>{
+     var jwt = JSON.parse(localStorage.getItem("doctor-login"))
+     console.log(jwt)
+     try {
+       const result = await axios.get(`${config.URL_HOST}/appointment/find/${jwt.user.fname} ${jwt.user.lname}?page=${page}`,{
+         headers:{
+            'authorization':`Bearer ${jwt.token}` ,
+               'Accept' : 'application/json',
+               'Content-Type': 'application/json'
+         }
+       })
+       setAppointmentData(result.data)
+      //  setUserInfo(jwt)
+     } catch (error) { 
+       console.log(error.response)
+     }
+   }
     //appointment Delete
     const appointmentDelete =  (id, row)=>{
       Swal.fire({
@@ -75,7 +85,7 @@ export default function AdminAppointment() {
     }
  //pagination
   const handlePageClick = (data)=>{
-    AppointmentApi(data.selected+1)
+    doctorPatient(data.selected+1)
   }
 // delete appointment
   const clearHandler = (e)=>{

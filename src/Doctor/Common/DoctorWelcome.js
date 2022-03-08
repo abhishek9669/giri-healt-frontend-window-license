@@ -7,22 +7,16 @@ export default function DoctorWelcome(props) {
   //State Area
   const [profileActive, setProfileActive] = useState(false);
   const [asideActive, setAsideActive] = useState(false)
-  const [userInfo, setUserInfo] = useState(false)
+
   const Navigate = useNavigate()
   useEffect(()=>{
     if(!window.localStorage.getItem("doctor-login")){
       Navigate("/doctor-login")
-    }else{
-     dcryptToken(localStorage.getItem("doctor-login"))
     }
   },[Navigate])
 
-  function dcryptToken (data){
-    var bytes = CryptoJS.AES.decrypt(data, confing.LOGIN_API_KEY);
-     setUserInfo( JSON.parse(bytes.toString(CryptoJS.enc.Utf8)))
-  }
 
-  console.log(userInfo)
+
   //function area
   const porfileCont = () => {
     if (profileActive === true) {
@@ -118,7 +112,7 @@ export default function DoctorWelcome(props) {
                           />
                         </div>
                         <h4 className="mx-1" style={{ cursor: "pointer" }} onClick={porfileCont} >
-                        {userInfo && `${userInfo.user.fname} ${userInfo.user.lname}` }
+                        {localStorage.getItem("doctor-login") && `${JSON.parse(localStorage.getItem("doctor-login")).user.fname} ${JSON.parse(localStorage.getItem("doctor-login")).user.lname}` }
                         </h4>
                       </div>
                       <div
