@@ -45,29 +45,16 @@ export default function Header() {
       <nav className="navbar navbar-expand-lg navbar-light shadow-sm">
         <div className="container">
           <NavLink className="navbar-brand" to="/"><span className="text-primary">Giri</span>-Health</NavLink>
-          <form action="#">
-            <div className="input-group input-navbar">
-              <div className="input-group-prepend">
-                <span className="input-group-text" id="icon-addon1"><span className="mai-search" /></span>
-              </div>
-              <input type="text" className="form-control" placeholder="Enter keyword.." aria-label="Username" aria-describedby="icon-addon1" />
-            </div>
-          </form>
+  
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupport" aria-controls="navbarSupport" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarSupport">
             <ul className="navbar-nav ml-auto">
               <li className="nav-item active">
-                <a className="nav-link" href="index.html">Home</a>
+                <NavLink className="nav-link" to="/">Home</NavLink>
               </li>
-              <li className="nav-item">
-                <a className="nav-link" href="about.html">About Us</a>
-              </li>
-              
-              <li className="nav-item">
-                <a className="nav-link" href="blog.html">News</a>
-              </li>
+          
                {window.localStorage.getItem("jwt-normal-user") ? (
                  <>
                     <li className="nav-item">
@@ -96,7 +83,7 @@ export default function Header() {
                       <NavLink className="btn btn-primary ml-lg-3" to="/doctor-login">Doctors Login</NavLink>
                     </li>
                       <li className="nav-item">
-                        <NavLink className="btn btn-primary ml-lg-3" to="/login-register" >Patient Login</NavLink>
+                        <NavLink className="btn btn-primary my-md-0 my-2 ml-lg-3" to="/login-register" >Patient Login</NavLink>
                       </li>
                </>)}
             </ul>

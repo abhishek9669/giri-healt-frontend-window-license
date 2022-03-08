@@ -99,9 +99,10 @@ export default function LoginRegister() {
                 setMessage({...message, status:true, msg:result.data.msg, color:"text-success"})
             }
         } catch (error) {
+            setMessage({...message, status:true, msg:error.response.data.msg, color:"text-danger"})
             console.log(error.response)
             setIsLoading(false)
-            setMessage({...message, status:true, msg:error.response.data.msg})
+            
         }
     }
     const sendOtpHandler = (e)=>{
@@ -208,6 +209,7 @@ export default function LoginRegister() {
                                          <div className="mb-3">
                                             <label  className="form-label">Email address <span className='text-danger'>*</span></label>
                                             <input required type="email" name='email' value={forgotPass.email || ""} onChange={forgotPassHandler}  className="form-control"  />  
+                                            
                                          </div>
 
                                          {/* otp Handler logic */}

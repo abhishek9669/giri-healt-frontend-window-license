@@ -53,7 +53,7 @@ export default function AdminLogin() {
     
   return (
        <div className="container">
-           <div className="admin_form d-flex justify-content-center align-items-center ">
+           <div className=" my_form admiForm d-flex justify-content-center  align-items-center " style={{marginTop:"150px"}}>
             {
                 !forgotPass?(
                     <form className=' mx-auto text-center bg-white shadow p-4 rounded-3' onSubmit={handleSubmit}>

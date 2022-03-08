@@ -290,6 +290,9 @@ table thead tr th, .table thead tr td, .table tbody tr th, .table tbody tr td {
         display: none !important;
         position: fixed;
     }
+    .admin_form{
+        width: 100% !important;
+    }
     .my_aside.active{
         display: block !important;
     }
