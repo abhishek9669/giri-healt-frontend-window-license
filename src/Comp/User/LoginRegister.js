@@ -92,7 +92,6 @@ export default function LoginRegister() {
     const forgetPassApi = async ()=>{
         try {
             const result = await axios.post(`${config.URL_HOST}/users/email-send`,forgotPass)
-            console.log(result)
             if(result.status===200){
                 setIsLoading(false)
                 setCountTime(false)
@@ -147,7 +146,6 @@ export default function LoginRegister() {
               delete register.cpassword
                   try {
                         const result = await axios.post(`${config.URL_HOST}/user/create`,register)
-                        console.log(result)
                         if(result.status===200){
                             setRegister({})
                             Swal.fire(

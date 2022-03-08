@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import { useNavigate } from 'react-router-dom'
 import Layout from "../Common/Layout"
-import Swal from 'sweetalert2'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import Loader from '../../Loader'
 const config = require("../../config.json")
 export default function MyAppointment() {
 //State Area
+    const [isLoading, setIsLoading] =useState(false)
     const [myAppointments, setMyAppointments] = useState({
         data:[],
         meta:{
@@ -30,6 +31,7 @@ export default function MyAppointment() {
 //Function Area
  //myappointment data show
     const myAppointApi= async(page=1)=>{
+      setIsLoading(true)
         const id = JSON.parse(window.localStorage.getItem("jwt-normal-user"))
         try {
             const result = await axios.get(`${config.URL_HOST}/appointment/${id.user._id}?page=${page}&size=5`,{
@@ -37,45 +39,14 @@ export default function MyAppointment() {
                     'authorization':`Bearer ${id.token}`
                 }
             })
-      setMyAppointments(result.data)
+          setMyAppointments(result.data)
+          setIsLoading(false)
         } catch (error) {
             console.log(error.response)
+            setIsLoading(false)
         }
     }
-  //myAppointments remove handler
-    const removeAppointHandler =  (e,_id)=>{
-      var row = e.target.closest("tr")
-      var jwtToken = JSON.parse(window.localStorage.getItem("jwt-normal-user")).token
-        try {
-          Swal.fire({
-            title: 'Are you sure?',
-            text: "You want to delete this Appointment!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#96C93D',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-          }).then( async (result) => {
-            if (result.isConfirmed) {
-              const result = await axios.delete(`${config.URL_HOST}/appointment/${row.querySelector("td:first-child").innerHTML}`,{
-                headers:{
-                  'authorization':`Bearer ${jwtToken}`
-                }
-              })
-              if(result.status===200){
-                row.remove()
-                Swal.fire(
-                  'Deleted!',
-                  'Your Appointment has been deleted.',
-                  'success'
-                )
-              }
-            }
-          })
-        } catch (error) {
-           console.log(error.response)
-        }
-    }
+
  //page Handler
     const handlePageClick = (data)=>{
          myAppointApi(data.selected+1)
@@ -121,9 +92,9 @@ export default function MyAppointment() {
       })
       doc.save('table.pdf')
     }
-    console.log(myAppointments)
   return (
-    <>
+    <>  
+     {isLoading && <Loader/>}
       <Layout>
           <div className="container my-md-5 my-4">
             <div className="row">
@@ -141,7 +112,6 @@ export default function MyAppointment() {
                         <th> Day</th>
                         <th> Status</th>
                         <th>Download</th>
-                        <th>Cancel</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -164,11 +134,7 @@ export default function MyAppointment() {
                                             <span className="material-icons-sharp me-1" style={{fontSize:"10px"}}>description</span><span>PDF</span>
                                             </div>
                                             </td>
-                                            <td className='text-center '> 
-                                            <div onClick={(e)=>removeAppointHandler(e, _id)} className="bg-danger rounded text-white w-75 p-1 px-3 d-flex text-center align-items-center justify-content-center" style={{fontSize:"10px", cursor:"pointer"}}>
-                                            <span className="material-icons-sharp me-1" style={{fontSize:"15px"}} >close</span>
-                                            </div>
-                                            </td>
+                                           
                                             
                                         </tr>
                                     )

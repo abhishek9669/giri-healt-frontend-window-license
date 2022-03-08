@@ -15,7 +15,6 @@ export default function AdminAppointment() {
         pageCount:""
       }
     });
-    const [userInfo, setUserInfo] = useState(false)
     const Navigate = useNavigate()
     // const [page, setPage] = useState(1)
     useEffect(() => {
@@ -31,7 +30,6 @@ export default function AdminAppointment() {
    //api Calling Appointment
    const doctorPatient = async (page=1)=>{
      var jwt = JSON.parse(localStorage.getItem("doctor-login"))
-     console.log(jwt)
      try {
        const result = await axios.get(`${config.URL_HOST}/appointment/find/${jwt.user.fname} ${jwt.user.lname}?page=${page}`,{
          headers:{
@@ -68,8 +66,6 @@ export default function AdminAppointment() {
                'Content-Type': 'application/json'
               }
             })
-            console.log(result)
-            row.remove()
             setIsLoading(false)
          } catch (error) {
            console.log(error.response)
