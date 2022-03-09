@@ -62,7 +62,11 @@ export default function Welcome(props) {
               </NavLink>
               <NavLink to="/admin/users">
                 <span className="material-icons-sharp">person</span>
-                <h3>Customers</h3>
+                <h3>Patiens</h3>
+              </NavLink>
+              <NavLink to="/admin/doctors">
+                <span className="material-icons-sharp">vaccines</span>
+                <h3>Doctors</h3>
               </NavLink>
               <Link to="#">
                 <span className="material-icons-sharp">receipt_long</span>

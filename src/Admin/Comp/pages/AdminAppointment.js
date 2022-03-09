@@ -111,14 +111,13 @@ export default function AdminAppointment() {
                   <th>Phone</th>
                   <th>Email</th>
                   <th>Status</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {appointmentData.data.length === 0
                   ? null
                   : appointmentData.data.map((appointData) => {
-                    const {_id, date, email, mobile, name, query_category, user_id, time, doctor_name} = appointData
+                    const {_id, date, email, mobile, name, query_category, status, time, doctor_name} = appointData
                     var date2 = date.slice(0,10).split("-")
                         date2 = new Date(date2).toString().split(" ").slice(1,4)
                         date2 = date2.toString().replace(/,/g, " ")
@@ -159,16 +158,7 @@ export default function AdminAppointment() {
                           <td>
                             <h3 className="mb-0">{email}</h3>
                           </td>
-                          <td>
-                            <span className="btn btn-sm btn-warning ">
-                              Pending
-                            </span>
-                          </td>
-                          <td>
-                          <span className="btn btn-sm btn-success " onClick={clearHandler}>
-                             Clear
-                            </span>
-                          </td>
+                          <td className={status==="Success"?"text-primary":status==="Pending"?"text-danger":"text-info"}>{status}</td>
                         </tr>
                       );
                     }

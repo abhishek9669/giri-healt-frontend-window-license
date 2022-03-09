@@ -154,7 +154,7 @@ export default function LoginRegister() {
                                 `${result.data.msg}`,
                                 'success'
                               )
-                              setSwitchForm(true)
+                              setSwitchForm(true) 
                         }
                     } catch (error) {
                          console.log(error.response)

@@ -58,7 +58,7 @@ export default function Appoint() {
    }
   const doctorsFilter = (specialist)=>{
     const result2 = doctors.data.filter(doc=>{
-      return doc.specialist== specialist
+      return doc.specialist===specialist
     })
     setSelectDoc({data:result2})
     setGetDocDetails(`${result2[0].fname} ${result2[0].lname}`)
@@ -129,11 +129,14 @@ export default function Appoint() {
                     }
                   })
                   setIsLoading(false)
-                  Swal.fire(
-                    'Your Appointment has been Booked!',
-                    `${getFullDate(value)} ${timeAppoint}`,
-                    'success'
-                  )
+                  if(reslut.status===200){
+                    Swal.fire(
+                      'Your Appointment has been Booked!',
+                      `${getFullDate(value)} ${timeAppoint}`,
+                      'success'
+                    )
+                    Navgate("/myappointments")
+                  }
                 } catch (error) {
                    setIsLoading(false)
                 }

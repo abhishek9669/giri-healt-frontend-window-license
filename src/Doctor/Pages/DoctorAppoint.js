@@ -4,7 +4,6 @@ import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../../Loader';
 import DoctorWelcome from '../Common/DoctorWelcome';
-import Swal from 'sweetalert2'
 const config = require("../../config.json")
 export default function AdminAppointment() {
   //State Area 
@@ -15,11 +14,12 @@ export default function AdminAppointment() {
         pageCount:""
       }
     });
+
     const Navigate = useNavigate()
     // const [page, setPage] = useState(1)
     useEffect(() => {
       if(!window.localStorage.getItem("doctor-login")){
-        Navigate("/admin")
+        Navigate("/")
       }else{
         doctorPatient()
       }
@@ -31,6 +31,7 @@ export default function AdminAppointment() {
    const doctorPatient = async (page=1)=>{
      var jwt = JSON.parse(localStorage.getItem("doctor-login"))
      try {
+      setIsLoading(true)
        const result = await axios.get(`${config.URL_HOST}/appointment/find/${jwt.user.fname} ${jwt.user.lname}?page=${page}`,{
          headers:{
             'authorization':`Bearer ${jwt.token}` ,
@@ -39,55 +40,37 @@ export default function AdminAppointment() {
          }
        })
        setAppointmentData(result.data)
+       setIsLoading(false)
       //  setUserInfo(jwt)
      } catch (error) { 
        console.log(error.response)
      }
    }
-    //appointment Delete
-    const appointmentDelete =  (id, row)=>{
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You want to delete appointment!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#96C93D',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then(async (result) => {
-       
-        if (result.isConfirmed) {
-          setIsLoading(true)
-          try {
-              await axios.delete(`${config.URL_HOST}/appointment/${id}`,{
-              headers:{
-               'authorization':`Bearer ${JSON.parse(window.localStorage.getItem("jwt-token")).token}` ,
-               'Accept' : 'application/json',
-               'Content-Type': 'application/json'
-              }
-            })
-            setIsLoading(false)
-         } catch (error) {
-           console.log(error.response)
-           setIsLoading(false)
-         }
-          Swal.fire(
-            'Deleted!',
-            'Appointment has been deleted.',
-            'success'
-          )
-        }
-      })
-    }
+
  //pagination
   const handlePageClick = (data)=>{
     doctorPatient(data.selected+1)
   }
 // delete appointment
-  const clearHandler = (e)=>{
+  const statusHandler = async (e)=>{
     var row = e.target.closest("tr")
     var id = e.target.closest("tr").querySelector("td:first-child span").innerHTML
-    appointmentDelete(id, row)
+    var statusCon = e.target.closest("tr").querySelector("td:nth-child(7) span")
+        statusCon.innerHTML=e.target.value
+        if(statusCon.innerHTML==="Success"){
+          statusCon.setAttribute("class", "text-primary")
+        }
+        if(statusCon.innerHTML==="Pending"){
+          statusCon.setAttribute("class", "text-danger")
+        }
+        if(statusCon.innerHTML==="Inprogress"){
+          statusCon.setAttribute("class", "text-info")
+        }
+    try {
+      const result = await axios.patch(`${config.URL_HOST}/appointment/${id}`,{status:e.target.value})
+    } catch (error) {
+        console.log(error.response)
+    }
   }
   return (
     <>
@@ -114,7 +97,7 @@ export default function AdminAppointment() {
                 {appointmentData.data.length === 0
                   ? null
                   : appointmentData.data.map((appointData) => {
-                    const {_id, date, email, mobile, name, query_category,  time} = appointData
+                    const {_id, date, email, mobile, name, query_category,  time, status} = appointData
                     var date2 = date.slice(0,10).split("-")
                         date2 = new Date(date2).toString().split(" ").slice(1,4)
                         date2 = date2.toString().replace(/,/g, " ")
@@ -149,14 +132,17 @@ export default function AdminAppointment() {
                             <h3 className="mb-0">{email}</h3>
                           </td>
                           <td>
-                            <span className="btn btn-sm btn-warning ">
-                              Pending
+                            <span className={status==="Pending"?"text-danger":status==="Inprogress"?"text-info":"text-primary"}>
+                              {status}
                             </span>
                           </td>
                           <td>
-                          <span className="btn btn-sm btn-success " onClick={clearHandler}>
-                             Clear
-                            </span>
+                            <select onChange={statusHandler}  className='form-control update_status'>
+                              <option value="">Update Status</option>
+                              <option value="Pending">Pending</option>
+                              <option value="Inprogress">Inprogress</option>
+                              <option value="Success">Success</option>
+                            </select>
                           </td>
                         </tr>
                       );

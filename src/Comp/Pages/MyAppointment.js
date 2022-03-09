@@ -87,10 +87,9 @@ export default function MyAppointment() {
         head: [['Appointment _id', "Doctor Name", "Category", 'Time','Date','Day',"Status"]],
         body: [
           [getTrInfo(1),getTrInfo(2), getTrInfo(3),getTrInfo(4), getTrInfo(5),getTrInfo(6),getTrInfo(7)]
-          // ...
         ],
       })
-      doc.save('table.pdf')
+      doc.save('Appointment.pdf')
     }
   return (
     <>  
@@ -118,7 +117,7 @@ export default function MyAppointment() {
                         {
                             myAppointments.length===0? null :(
                                 myAppointments.data.map(myAppoint=>{
-                                    const {_id, query_category, time,date, doctor_name} = myAppoint
+                                    const {_id, query_category, time,date, doctor_name, status} = myAppoint
                                     var day = new Date(date).getDay()
                                     return(
                                         <tr key={_id} id="row_delete">
@@ -128,7 +127,7 @@ export default function MyAppointment() {
                                             <td>{date.slice(0,10)}</td>
                                             <td>{time}</td>
                                             <td>{daysInWeek[day]}</td>
-                                            <td >Pending</td>
+                                            <td className={status==="Success"?"text-primary":status==="Pending"?"text-danger":"text-info"}>{status}</td>
                                             <td className='text-center '> 
                                             <div className="warning-res text-white rounded  w-75 p-1 px-3 d-flex text-center align-items-center justify-content-center" onClick={pdfSaveHandler} style={{fontSize:"10px", cursor:"pointer"}}>
                                             <span className="material-icons-sharp me-1" style={{fontSize:"10px"}}>description</span><span>PDF</span>

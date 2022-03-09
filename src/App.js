@@ -13,6 +13,7 @@ import DoctorLoginRegister from './Comp/User/DoctorLoginRegister'
 import DoctorAppoint from './Doctor/Pages/DoctorAppoint'
 import DoctorDashboard from './Doctor/Pages/DoctorDashboard'
 import DoctorSchedule from './Doctor/Pages/DoctorSchedule'
+import Doctors from './Admin/Comp/pages/Doctors'
 
 export default function App() {
 
@@ -25,6 +26,7 @@ export default function App() {
             <Route path='/admin' element={<AdminLogin/>} />
             <Route path='/admin/dashboard' element={<Dashboard/>} />
             <Route path='/admin/users' element={<Users/>} />
+            <Route path='/admin/doctors' element={<Doctors/>} />
             <Route path='/doctor/appointments' element={<DoctorAppoint/>}/>
             <Route path='/doctor/schedule' element={<DoctorSchedule/>}/>
             <Route path='/doctor/dashboard' element={<DoctorDashboard/>}/>

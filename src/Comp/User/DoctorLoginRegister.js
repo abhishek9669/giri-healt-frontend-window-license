@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import { specialist } from '../../jsonData/specialist';
 import Swal from 'sweetalert2';
+import Loader from '../../Loader';
 const config = require("../../config.json")
 
 
@@ -15,6 +16,7 @@ export default function DocorLoginRegister() {
       const [doctorLogin, setDoctorLogin] = useState({})
       const [message, setMessage] = useState({status:false, msg:"", color:"text-danger"})
       const [switchForm, setSwitchForm] = useState(false)
+      const [isLoading, setIsLoading] = useState(false)
     //useNavigate
     const Navigate = useNavigate()
     //useEffect 
@@ -41,12 +43,15 @@ export default function DocorLoginRegister() {
       //doctor login api
        const doctorLoginApi = async ()=>{
          try {
+          setIsLoading(true)
            const result = await axios.post(`${config.URL_HOST}/user/doctor-login`, doctorLogin)
            if(result.status===200){
+            setIsLoading(false)
              window.localStorage.setItem("doctor-login", JSON.stringify(result.data))
              Navigate("/doctor/dashboard")
            }
          } catch (error) {
+           setIsLoading(false)
            console.log(error.response)
            setMessage({...message, status:true, msg:error.response.data.msg, color:"text-danger"})
          }
@@ -59,16 +64,20 @@ export default function DocorLoginRegister() {
     //doctor create api 
       const doctorCreateApi = async ()=>{
         try {
+          setIsLoading(true)
           const result = await axios.post(`${config.URL_HOST}/user/doctor`,{...user, country:country.country,state:country.region })
           if(result.status===200){
+            setIsLoading(false)
             Swal.fire(
               'Good job!',
               `${result.data.msg}`,
               'success'
             )
             setUser({})
+            setSwitchForm(false)
           }
         } catch (error) {
+          setIsLoading(false)
           console.log(error.response)
           setMessage({...message,status:true, msg: error.response.data.msg ,color:"text-danger"})
         }
@@ -94,6 +103,7 @@ export default function DocorLoginRegister() {
      }
   return (
      <>
+        {isLoading &&  <Loader />}
        <Layout>
            <div className="container my-md-5 my-4">
              <div className={` p-4 wow fadeInUp ${switchForm&& "bg-white shadow"} `}>

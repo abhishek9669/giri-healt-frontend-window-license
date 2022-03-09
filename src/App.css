@@ -172,6 +172,9 @@ Login click Start
   font-size: 1rem !important;
 }
 .form-control{
-  height: 30px !important;
+  height: 40px !important;
+}
+.update_status{
+  width: 120px !important;
 }
 }
