@@ -159,7 +159,9 @@ Login click Start
   padding: 5px;
   font-size: 8px !important
 }
-
+.modal-body input{
+  user-select: none;
+}
 @media only screen and (max-width:600px){
   .my_form {
     width: 100% !important;

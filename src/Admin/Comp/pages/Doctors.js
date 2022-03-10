@@ -16,7 +16,9 @@ export default function Doctors() {
     }
   });
  const [isLoading, setIsLoading] = useState(false)
- const [id,setId] = useState("")
+ const [docSingle,setDocSingle] = useState({
+  data:[]
+})
  const Navigate = useNavigate()
   //useeffect calling
     useEffect(() => {
@@ -47,13 +49,22 @@ const doctorsApi = async (pageno=1) => {
     doctorsApi(data.selected+1)
  }
 //viewHandler
-const viewHandler = (e)=>{
-  var id = e.target.closest("tr")
-  setId(id)
+const viewHandler = async (e)=>{
+  var id = e.target.closest("tr").querySelector("td:first-child span").innerHTML
+    try {
+      const result = await axios.get(`${config.URL_HOST}/doctor/${id}`,{
+        headers:{
+          'authorization':"Bearer"+ " " + JSON.parse(localStorage.getItem("jwt-token")).token
+        }
+      })
+      setDocSingle(result)
+    } catch (error) {
+      console.log(error.response)
+    }
 }
   return (
    <>
-    <DoctorEditView id={id}/>
+    <DoctorEditView Data={docSingle}/>
     {isLoading&&<Loader/>}
      <Welcome>
         <div className="row">
@@ -94,10 +105,7 @@ const viewHandler = (e)=>{
                                      <h3 className="mb-0">{email}</h3>
                                  </td>
                                  <td> 
-                                    
-                                     <Link to={"/doctor/edit-view"} className='btn btn-sm btn-info p-1 mx-1 my-1 my-md-0' data-bs-toggle="modal" data-bs-target="#view_doctor" onClick={viewHandler}>View</Link>
-                                     <button className='btn btn-sm btn-warning p-1 mx-1 my-1 my-md-0'>Edit</button>
-                                     <button className='btn btn-sm btn-danger p-1 mx-1 my-1 my-md-0'>Delete</button>
+                                     <Link to={"/doctor/edit-view"} className='btn btn-sm btn-info mx-1 my-1 my-md-0' data-bs-toggle="modal" data-bs-target="#view_doctor" onClick={viewHandler}>View</Link>
                                  </td>
                               </tr>
                           )
