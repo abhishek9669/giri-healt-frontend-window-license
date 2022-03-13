@@ -68,10 +68,8 @@ const usersApi = async (pageno=1) => {
               <tbody>
               {users.data.length===0 ? null :(
                      users.data.map(userData=>{
-                         console.log(userData)
                          //destructure to the users data
                           const {_id, active, date, email, mobile, fname, lname, user_type} = userData;
-                           console.log(active)
                           return(
                               <tr key={_id}>
                                  <td> 

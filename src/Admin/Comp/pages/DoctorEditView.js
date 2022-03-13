@@ -1,31 +1,46 @@
 import axios from 'axios'
 import React, { useState , useEffect} from 'react'
-import { specialist as specCat } from '../../../jsonData/specialist'
 
+import { specialist as specCat } from '../../../jsonData/specialist'
+import Loader from '../../../Loader';
 const config = require("../../../config.json")
 export default function DoctorEditView({Data}) {
 //state area ,
 const [readOnly, setReadOnly] = useState(true)
 const [update, setUpadte] = useState({})
+const [isLoading, setIsLoading] = useState(false)
 const updateHandler = (e)=>{
   var name = e.target.name
   var value = e.target.value
-  setUpadte({...update,[name]:value})
+  !readOnly && setUpadte({...update,[name]:value})
 }
+
  //destructure to the data
- const {_id,fname, lname, active, country, email, gender, specialist, state, user_type, username, mobile} = Data.data;
+ var {_id,fname, lname, active, country, email, gender, specialist, state,  mobile} = Data.data;
 
 //function Area
-const doctorUpdateSubmit = async ()=>{
+ //activehandler
+ const readHandler = ()=>{
+  setReadOnly(readOnly?false:true)
 
-  //  try {
-  //     const result = await axios.put(`${config.URL_HOST}/doctor/${_id}`, )
-  //  } catch (error) {
-  //    console.log(error.response)
-  //  }
+ }
+// doctor update handler 
+const doctorUpdateSubmit = async (e)=>{
+  setIsLoading(true)
+  var data = {fname:update.fname || fname, lname:update.lname || lname, specialist:update.specialist || specialist, mobile:update.mobile || mobile, active: active}
+   try {
+      const result = await axios.put(`${config.URL_HOST}/doctor/${_id}`, data )
+      if(result.status===200){
+        setIsLoading(false)
+      }
+   } catch (error) {
+     setIsLoading(false)
+     console.log(error.response)
+   }
 }
   return (
-   <div className="modal  fade" id="view_doctor" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div className="modal  fade" id="view_doctor" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {isLoading&&<Loader/>}
   <div className="modal-dialog modal-lg">
     <div className="modal-content">
       <div className="modal-header border-0">
@@ -45,19 +60,20 @@ const doctorUpdateSubmit = async ()=>{
                  <form onSubmit={doctorUpdateSubmit}>
                  <div className="p-3 py-5">
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                      <span className={`btn btn-sm btn-dark ${!readOnly && "disabled"}`} onClick={()=>setReadOnly(readOnly?false:true)} >Edit Profile</span>
+                      <h3 className='bg-info text-white shadow-sm p-1 px-2'>Id: {_id}</h3>
+                      <span className={`btn btn-sm btn-dark ${!readOnly && "disabled"}`} onClick={readHandler} >Edit Profile</span>
                     </div>
                     <div className="row mt-2">
                       <div className="col-md-6"><input name="fname"  onChange={updateHandler} required  readOnly={readOnly} type="text" className="form-control" placeholder="first name" defaultValue={fname} /></div>
                       <div className="col-md-6"><input name="lname" onChange={updateHandler} required readOnly={readOnly} type="text" className="form-control" defaultValue={lname} placeholder="last name" /></div>
                     </div>
                     <div className="row mt-3">
-                      <div className="col-md-6"><input required readOnly={readOnly} type="text" className="form-control" placeholder="Email" defaultValue={mobile} /></div>
-                      <div className="col-md-6"><input required readOnly={readOnly} type="text" className="form-control" defaultValue={gender}  /></div>
+                      <div className="col-md-6"><input required name="mobile" onChange={updateHandler} readOnly={readOnly} type="text" className="form-control" placeholder="Mobile" defaultValue={mobile} /></div>
+                      <div className="col-md-6"><input required  readOnly type="text" className="form-control" defaultValue={gender}  /></div>
                     </div>
                     <div className="row mt-3 align-items-center">
                       <div className="col-md-6">
-                       <select name="" value={specialist} readOnly={readOnly} className='form-control'>
+                       <select name="specialist"  value={ update.specialist || specialist}  onChange={updateHandler} readOnly={readOnly} className='form-control'>
                           {
                             specCat.map((spec, index)=>{
                               return(
@@ -67,15 +83,11 @@ const doctorUpdateSubmit = async ()=>{
                           }
                        </select>  
                       </div>
-                      <div className="col-md-6">
-                        <div className="form-check form-switch my-2">
-                          <input className="form-check-input ms-0 bg-success border-0" type="checkbox" id="flexSwitchCheckChecked" defaultChecked />
-                          <label className="form-check-label ms-5" htmlFor="flexSwitchCheckChecked">Active</label>
-                        </div>  
-                      </div>
-
                     </div>
-                    {!readOnly && <div className="mt-5 text-right"><button className="btn btn-primary profile-button"type="submit">Save Profile</button></div>}
+                    {!readOnly && <div className="mt-5 text-right">
+                      <span className='btn btn-warning m-1' onClick={()=>setReadOnly(true)}>Go Back</span>
+                      <button className="btn btn-primary m-1 profile-button"type="submit">Save Profile</button>
+                      </div>}
                   </div> 
                   </form>
                 </div>

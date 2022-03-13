@@ -67,7 +67,7 @@ export default function AdminAppointment() {
           statusCon.setAttribute("class", "text-info")
         }
     try {
-      const result = await axios.patch(`${config.URL_HOST}/appointment/${id}`,{status:e.target.value})
+      await axios.put(`${config.URL_HOST}/appointment/${id}`,{status:e.target.value})
     } catch (error) {
         console.log(error.response)
     }
