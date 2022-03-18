@@ -1,6 +1,6 @@
 import axios from 'axios'
-import React, { useState , useEffect} from 'react'
-
+import React, { useState } from 'react'
+import Swal from 'sweetalert2';
 import { specialist as specCat } from '../../../jsonData/specialist'
 import Loader from '../../../Loader';
 const config = require("../../../config.json")
@@ -21,17 +21,34 @@ const updateHandler = (e)=>{
 //function Area
  //activehandler
  const readHandler = ()=>{
-  setReadOnly(readOnly?false:true)
 
+  setReadOnly(readOnly?false:true)
  }
 // doctor update handler 
 const doctorUpdateSubmit = async (e)=>{
+  e.preventDefault()
   setIsLoading(true)
-  var data = {fname:update.fname || fname, lname:update.lname || lname, specialist:update.specialist || specialist, mobile:update.mobile || mobile, active: active}
+  var jwt = JSON.parse(localStorage.getItem("jwt-token"))
+  var data = {fname:update.fname || fname, lname:update.lname || lname, specialist:update.specialist || specialist, email: update.email || email,  mobile:update.mobile || mobile, active: active}
    try {
-      const result = await axios.put(`${config.URL_HOST}/doctor/${_id}`, data )
+      const result = await axios.put(`${config.URL_HOST}/doctor/${_id}`, data, {
+        headers:{
+          'authorization':`Bearer ${jwt.token}` ,
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json'
+        }
+      } )
+      console.log(result)
       if(result.status===200){
         setIsLoading(false)
+        Swal.fire(
+          'Good job!',
+          result.data,
+          'success'
+        )
+        setTimeout(()=>{
+      window.location.reload()
+        },2000)
       }
    } catch (error) {
      setIsLoading(false)
@@ -72,6 +89,7 @@ const doctorUpdateSubmit = async (e)=>{
                       <div className="col-md-6"><input required  readOnly type="text" className="form-control" defaultValue={gender}  /></div>
                     </div>
                     <div className="row mt-3 align-items-center">
+                    <div className="col-md-6"><input required name="email" onChange={updateHandler} readOnly={readOnly} type="email" className="form-control" placeholder="Email" defaultValue={email} /></div>
                       <div className="col-md-6">
                        <select name="specialist"  value={ update.specialist || specialist}  onChange={updateHandler} readOnly={readOnly} className='form-control'>
                           {

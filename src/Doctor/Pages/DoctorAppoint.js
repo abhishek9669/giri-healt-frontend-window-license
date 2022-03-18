@@ -67,7 +67,14 @@ export default function AdminAppointment() {
           statusCon.setAttribute("class", "text-info")
         }
     try {
-      await axios.put(`${config.URL_HOST}/appointment/${id}`,{status:e.target.value})
+      var jwt = JSON.parse(localStorage.getItem("doctor-login"))
+      await axios.put(`${config.URL_HOST}/appointment/${id}`,{status:e.target.value},{
+        headers:{
+          'authorization':`Bearer ${jwt.token}` ,
+          'Accept' : 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
     } catch (error) {
         console.log(error.response)
     }

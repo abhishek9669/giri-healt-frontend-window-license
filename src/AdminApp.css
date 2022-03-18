@@ -281,7 +281,7 @@ table thead tr th, .table thead tr td, .table tbody tr th, .table tbody tr td {
 }
 
 @media only screen and (min-width: 600px) {
-    .menu-icon{
+    .menu-icon, .close {
       display: none;
     }
 }

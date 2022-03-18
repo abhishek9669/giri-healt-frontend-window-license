@@ -14,11 +14,10 @@ import DoctorAppoint from './Doctor/Pages/DoctorAppoint'
 import DoctorDashboard from './Doctor/Pages/DoctorDashboard'
 import DoctorSchedule from './Doctor/Pages/DoctorSchedule'
 import Doctors from './Admin/Comp/pages/Doctors'
-
 export default function App() {
 
   return (
-    
+           
            <Routes>
             <Route path='/' element={<Homepage/>} />
             <Route path='/contact' element={<Appoint />} />

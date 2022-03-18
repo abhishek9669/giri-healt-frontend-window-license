@@ -1,6 +1,7 @@
 
 import React, {  useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import DoctorProfile from "../Pages/DoctorProfile";
 var CryptoJS = require("crypto-js");
 const confing = require("../../config.json")
 export default function DoctorWelcome(props) {
@@ -41,6 +42,7 @@ export default function DoctorWelcome(props) {
     }
   return (
     <div className="my_container">
+      <DoctorProfile/>
       <div className="row">
         <div className="col-12 col-md-2 ">
           <div className={`my_aside bg-white ${asideActive && "active"}`}>
@@ -70,10 +72,10 @@ export default function DoctorWelcome(props) {
                 <span className="material-icons-sharp">event_note</span>
                 <h3>Doctor Schedule</h3>
               </NavLink>
-              <NavLink to="/admin/users">
+              {/* <NavLink to="#">
                 <span className="material-icons-sharp">person</span>
                 <h3>Patient</h3>
-              </NavLink>
+              </NavLink> */}
               <Link to="/" onClick={logoutHandler}>
                 <span className="material-icons-sharp">logout</span>
                 <h3 >Logout</h3>
@@ -124,7 +126,7 @@ export default function DoctorWelcome(props) {
                           <span className="material-icons-sharp">settings</span>
                           <h3>Settings</h3>
                         </NavLink>
-                        <NavLink to="#">
+                        <NavLink to={"#"} data-bs-toggle="modal" data-bs-target="#profile">
                           <span className="material-icons-sharp">person</span>
                           <h3>Profile</h3>
                         </NavLink>

@@ -60,10 +60,10 @@ export default function Welcome(props) {
                 <span className="material-icons-sharp">book_online</span>
                 <h3>Appointments</h3>
               </NavLink>
-              <NavLink to="/admin/users">
+              {/* <NavLink to="#">
                 <span className="material-icons-sharp">person</span>
                 <h3>Patiens</h3>
-              </NavLink>
+              </NavLink> */}
               <NavLink to="/admin/doctors">
                 <span className="material-icons-sharp">vaccines</span>
                 <h3>Doctors</h3>
